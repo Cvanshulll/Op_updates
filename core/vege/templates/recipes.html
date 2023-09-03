@@ -1,176 +1,112 @@
-{% extends "base.html" %}
+{%extends "base.html"%} {% block start %}
 
-{% block start %}
-  {% if messages %}
-    <div class="alert alert-primary" role="alert" id="message-alert">
-      {% for message in messages %}
-        {{ message }}
-      {% endfor %}
-    </div>
-    <script>
-      // Automatically dismiss the alert after 5 seconds (adjust the time as needed)
-      setTimeout(function () {
-        var messageAlert = document.getElementById('message-alert');
-        if (messageAlert) {
-          messageAlert.style.display = 'none';
-        }
-      }, 5000); // 5000 milliseconds = 5 seconds
-    </script>
-  {% endif %}
 
-  <div class="container mt-5">
-    <div class="container" id="search-recipe">
-      <form class="d-flex pt-4">
-        <button class="btn btn-outline-success me-2" type="submit">Search</button>
-        <input name="search" class="form-control me-2" type="text" placeholder="Search" aria-label="Search">
+
+{% comment %} welcome {% endcomment %}
+
+{% if messages %}
+  <div class="alert alert-primary" role="alert">
+    {% for message in messages %}
+    {{ message }}
+    {% endfor %}
+  </div>
+    
+    
+{% endif %}
+
+
+<div class="container mt-5">
+
+  <form class="d-flex">
+    <a class="btn btn-outline-success " href="#add-recipe-form">
+      Add Recipe
+    </a>
+  </form>
+
+  <div class="container " id="search-recipe">
+    
+   
+      <form class="d-flex pt-4" >
+        <input  name ="search" class="form-control me-2" type="text" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-success" type="submit">Search</button>
       </form>
-    </div>
-
-    <div class="row">
-      {% for opportunity in opportunities %}
-        <div class="col-sm-6 col-lg-3 col-md-3 mt-5">
-          <div class="card equal-height-card">
-            <img src="/media/{{ opportunity.image }}" class="card-img-top" alt="{{ opportunity.name }}" style="height: 10rem; width: 50%, align-item:center" />
-            <div class="card-body">
-              <h5 class="card-title">{{ opportunity.name }}</h5>
-              <h6 class="card-subtitle mb-2 text-muted">{{ opportunity.role }}</h6>
-              <p class="card-text">{{ opportunity.location }}</p>
-
-              <!-- Status checkboxes -->
-              
-
-              <!-- Apply button -->
-              {% if opportunity.status %}
-                <a href="{{ opportunity.op_link }}" class="btn btn-primary" target="_blank">Apply</a>
-              {% else %}
-                <button class="btn btn-primary" type="button" disabled>Apply</button>
-              {% endif %}
-
-              <a href="/update-opportunity/{{ opportunity.id }}" class="btn btn-success">Update</a>
-              <a href="/delete-opportunity/{{ opportunity.id }}" class="btn btn-danger m-2">X</a>
-
-              <div >
-                <input type="checkbox" id="applied-checkbox-{{ opportunity.id }}" data-status="applied" data-opportunity-id="{{ opportunity.id }}" value="Bike">
-                <label for="applied-checkbox-{{ opportunity.id }}">Applied</label><br>
-                <input type="checkbox" id="pending-checkbox-{{ opportunity.id }}" data-status="pending" data-opportunity-id="{{ opportunity.id }}" value="Car">
-                <label for="pending-checkbox-{{ opportunity.id }}">Pending</label><br>
-                <input type="checkbox" id="rejected-checkbox-{{ opportunity.id }}" data-status="rejected" data-opportunity-id="{{ opportunity.id }}" value="Boat">
-                <label for="rejected-checkbox-{{ opportunity.id }}">Rejected</label><br>
-              </div>
-
-              <!-- Checkbox status display -->
-              <p >
-                <span id="applied-status-{{ opportunity.id }}"></span>
-                <span id="pending-status-{{ opportunity.id }}"></span>
-                <span id="rejected-status-{{ opportunity.id }}"></span>
-              </p>
-            </div>
-
-            
-          </div>
-        </div>
-      {% endfor %}
-    </div>
   </div>
 
-  <script>
-    // Function to update local storage with checkbox statuses
-    function updateLocalStorage() {
-      const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-      const statusData = {};
-  
-      checkboxes.forEach(checkbox => {
-        const status = checkbox.getAttribute('data-status');
-        const opportunityId = checkbox.getAttribute('data-opportunity-id');
-        if (!statusData[opportunityId]) {
-          statusData[opportunityId] = {};
-        }
-        statusData[opportunityId][status] = checkbox.checked;
-  
-        // disable the span if the checkbox is not checked
-        const statusElement = document.getElementById(`${status}-status-${opportunityId}`);
-        if (statusElement) {
-          statusElement.innerText = checkbox.checked ? '' : '';
-        }
+  <table class="table table-hover mt-5">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">RecipeName</th>
+        <th scope="col">Description</th>
+        <th scope="col">Image</th>
+        <th scope="col">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for recipe in recipes %}
+      <tr>
+        <th scope="row">{{forloop.counter}}</th>
+        <td>{{recipe.name}}</td>
+        <td>{{recipe.description}}</td>
+        <td>
+          <img src="/media/{{recipe.image}}" style="height:100px "/></td>
+          <td>
+            <a href="/delete-recipe/{{recipe.id}}" class="btn btn-danger m-2" >Delete</a>
+            <a href="/update-recipe/{{recipe.id}}" class="btn btn-success" >Update</a>
+            </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
 
-        
-      });
-  
-      localStorage.setItem('checkboxStatus', JSON.stringify(statusData));
-      updateColors(); // Update colors when checkbox status changes
-    }
-  
-    // Function to load checkbox statuses from local storage
-    function loadCheckboxStatus() {
-      const checkboxStatus = JSON.parse(localStorage.getItem('checkboxStatus')) || {};
-  
-      for (const opportunityId in checkboxStatus) {
-        if (checkboxStatus.hasOwnProperty(opportunityId)) {
-          for (const status in checkboxStatus[opportunityId]) {
-            if (checkboxStatus[opportunityId].hasOwnProperty(status)) {
-              const checkbox = document.querySelector(`input[data-opportunity-id="${opportunityId}"][data-status="${status}"]`);
-              if (checkbox) {
-                checkbox.checked = checkboxStatus[opportunityId][status];
-  
-                // Update the checkbox status display
-                const statusElement = document.getElementById(`${status}-status-${opportunityId}`);
-                if (statusElement) {
-                  // console.log(statusElement);
-                  const parentElement = statusElement.parentElement;
-                  // console.log(parentElement);
-                  const mainParentElement = parentElement.parentElement;
-                   // console.log(mainParentElement);
-                  const grandParentElement = mainParentElement.parentElement;
-                  // console.log(grandParentElement);
 
-                  // statusElement.innerText = checkbox.checked ? '' : ''
-                  // background color change
-                  if (checkbox.checked) {
-                    grandParentElement.style.border= 'red 1.5px solid';
-                  } else {
-                    grandParentElement.style.border = 'black 1px solid';
-                  }
-                  
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  
-    // Function to update background colors based on status
-    function updateColors() {
-      const cards = document.querySelectorAll('.card');
-  
-      cards.forEach(card => {
-        const opportunityId = card.getAttribute('data-opportunity-id');
-        
-        const statusData = JSON.parse(localStorage.getItem('checkboxStatus')) || {};
-        console.log(statusData);
-        const applied = statusData[opportunityId] && statusData[opportunityId]['applied'];
-        const pending = statusData[opportunityId] && statusData[opportunityId]['pending'];
-        const rejected = statusData[opportunityId] && statusData[opportunityId]['rejected'];
-  
-        if (applied) {
-          card.style.backgroundColor = 'green';
-        } else if (pending) {
-          card.style.backgroundColor = 'yellow';
-        } else if (rejected) {
-          card.style.backgroundColor = 'red';
-        } else {
-          // Default background color
-          card.style.backgroundColor = 'white';
-        }
-      });
-    }
-  
-    // Add event listeners to checkboxes for status changes
-    document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-      checkbox.addEventListener('change', updateLocalStorage);
-    });
-  
-    // Load checkbox statuses from local storage and update colors when the page loads
-    loadCheckboxStatus();
-  </script>
+<form
+id="add-recipe-form"
+class="col-6 mx-auto card p-3 shadow-lg my-5"
+method="post"
+enctype="multipart/form-data">
+{% csrf_token %}
+<h2>Add Recipe</h2>
+<hr />
+<div class="mb-3">
+  <label for="exampleInputEmail1" class="form-label">Recipe Name</label>
+  <input
+    name="name"
+    type="text"
+    required
+    class="form-control"
+    id="exampleInputEmail1"
+    aria-describedby="emailHelp"
+  />
+  {% comment %} <div id="emailHelp" class="form-text">
+    We'll never share your email with anyone else.
+  </div> {% endcomment %}
+</div>
+<div class="mb-3">
+  <label for="exampleInputPassword1" class="form-label">Description</label>
+  <textarea
+    name="description"
+    required
+    class="form-control"
+    id="exampleFormControlTextarea1"
+  ></textarea>
+</div>
+<div class="mb-3">
+  <label for="exampleInputPassword1" class="form-label">Image</label>
+  <input
+    name="image"
+    type="file"
+    class="form-control"
+    id="exampleInputPassword1"
+  />
+</div>
+<button type="submit" class="btn btn-success">Add Recipe</button>
+</form class="m-4 p-4">
+<form class="d-flex m-4 ">
+  <a class="btn btn-outline-success " href="#search-recipe">
+    Search
+  </a>
+</form>
+
 {% endblock %}
