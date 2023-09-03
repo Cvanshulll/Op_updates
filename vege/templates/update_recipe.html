@@ -1,0 +1,106 @@
+{%extends "base.html"%} {% block start %}
+
+<div class="container mt-5">
+  <form
+    class="col-6 mx-auto card p-3 shadow-lg"
+    method="post"
+    enctype="multipart/form-data">
+    {% csrf_token %}
+    <h2>Update opportunity</h2>
+    <hr />
+    <div class="mb-3">
+      <label for="exampleInputEmail1" class="form-label">Company</label>
+      <input
+        name="name"
+        type="text"
+        required
+        class="form-control"
+        id="exampleInputEmail1"
+        aria-describedby="emailHelp"
+        value="{{opportunity.name}}"
+      />
+    </div>
+    <div class="mb-3">
+      <label for="exampleInputEmail1" class="form-label">Location</label>
+      <input
+        name="location"
+        type="text"
+        
+        class="form-control"
+        id="exampleInputEmail1"
+        aria-describedby="emailHelp"
+        value="{{opportunity.location}}"
+      />
+    </div>
+    <div class="mb-3">
+      <label for="exampleInputEmail1" class="form-label">Role</label>
+      <input
+        name="role"
+        type="text"
+        required
+        class="form-control"
+        id="exampleInputEmail1"
+        aria-describedby="emailHelp"
+        value="{{opportunity.role}}"
+      />
+    </div>
+    <div class="mb-3">
+      <label for="exampleInputEmail1" class="form-label">Batch</label>
+      <input
+        name="batch"
+        type="text"
+        
+        class="form-control"
+        id="exampleInputEmail1"
+        aria-describedby="emailHelp"
+        value="{{opportunity.batch}}"
+      />
+    </div>
+    <div class="mb-3">
+      <label for="exampleInputEmail1" class="form-label">Link</label>
+      <input
+        name="op_link"
+        type="text"
+        required
+        class="form-control"
+        id="exampleInputEmail1"
+        aria-describedby="emailHelp"
+        value="{{opportunity.op_link}}"
+      />
+    </div>
+    
+    <div class="mb-3">
+      <label for="status" class="form-label">Status</label>
+      <select name="status" class="form-select" aria-label="Default select example">
+        <option value="1" {% if opportunity.status == 1 %} selected {% endif %}>Active</option>
+        <option value="0" {% if opportunity.status == 0 %} selected {% endif %}>Inactive</option>
+      </select>
+    </div>
+    
+    {% comment %} <div class="mb-3">
+      <label for="exampleInputPassword1" class="form-label">Description</label>
+      <textarea
+        name="description"
+        
+        class="form-control"
+        id="exampleFormControlTextarea1"
+      >{{opportunity.description}}</textarea>
+    </div> {% endcomment %}
+    <div class="mb-3">
+      <label for="exampleInputPassword1" class="form-label">Image</label>
+      <input
+        name="image"
+        type="file"
+        class="form-control"
+        id="exampleInputPassword1"
+      />
+    </div>
+    <button type="submit" class="btn btn-success">Update Recipe</button>
+  </form>
+
+
+</div>
+
+
+
+{% endblock %}
