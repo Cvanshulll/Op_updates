@@ -1,0 +1,82 @@
+<!-- status_checkboxes.html -->
+
+<!-- Add these data attributes to your checkboxes to identify them -->
+<input type="checkbox" id="applied-checkbox" data-status="applied" value="Bike">
+<label for="applied-checkbox">Applied</label>
+<br/>
+<input type="checkbox" id="pending-checkbox" data-status="pending" value="Car">
+<label for="pending-checkbox">Pending</label>
+<br/>
+<input type="checkbox" id="rejected-checkbox" data-status="rejected" value="Boat">
+<label for="rejected-checkbox">Rejected</label>
+
+{% comment %} get localstorage data {% endcomment %}
+<div id="status">
+    <p>Applied: <span id="applied">
+        
+    </span></p>
+    <p>Pending: <span id="pending"></span></p>
+    <p>Rejected: <span id="rejected"></span></p>
+</div>
+
+<script>
+// Function to update local storage with checkbox statuses
+function updateLocalStorage() {
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    const statusData = {};
+
+    checkboxes.forEach(checkbox => {
+        statusData[checkbox.getAttribute('data-status')] = checkbox.checked;
+    });
+
+    localStorage.setItem('checkboxStatus', JSON.stringify(statusData));
+}
+
+// Function to load checkbox statuses from local storage
+function loadCheckboxStatus() {
+    const checkboxStatus = JSON.parse(localStorage.getItem('checkboxStatus')) || {};
+
+    for (const status in checkboxStatus) {
+        if (checkboxStatus.hasOwnProperty(status)) {
+            const checkbox = document.querySelector(`input[data-status="${status}"]`);
+            if (checkbox) {
+                checkbox.checked = checkboxStatus[status];
+            }
+        }
+    }
+}
+
+{% comment %} get local storage data  and display in html{% endcomment %}
+const statusData = JSON.parse(localStorage.getItem('checkboxStatus')) || {};
+const statusElement = document.getElementById('status');
+// display local storage data in html
+for (const status in statusData) {
+    if (statusData.hasOwnProperty(status)) {
+        statusElement.querySelector(`#${status}`).innerText = statusData[status];
+    }
+}
+
+// Add event listeners to checkboxes for status changes
+document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+    checkbox.addEventListener('change', updateLocalStorage);
+});
+
+// color card based on status
+const card = document.querySelector('.card');
+const status = card.querySelector('.status').innerText;
+if (status === 'Applied') {
+    card.style.backgroundColor = '#f5f5f5';
+} else if (status === 'Pending') {
+    card.style.backgroundColor = '#fff9e6';
+} else if (status === 'Rejected') {
+    card.style.backgroundColor = '#ffe6e6';
+}
+
+// 
+
+// Load checkbox statuses from local storage when the page loads
+loadCheckboxStatus();
+</script>
+
+
+
