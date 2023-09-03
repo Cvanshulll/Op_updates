@@ -9,9 +9,10 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 urlpatterns = [
     path('',head, name='he'),
-    path('recipes/',recipes, name='recipes'),
-    path('delete-recipe/<int:id>/',delete_recipe, name='delete_recipe'),
-    path('update-recipe/<int:id>/',update_recipe, name='update_recipe'),
+    path('opportunities/',opportunities, name='opportunities'),
+    path('delete-opportunity/<int:id>/',delete_opportunity, name='delete_opportunity'),
+    path('update-opportunity/<int:id>/',update_opportunity, name='update_opportunity'),
+    path('add-opportunity/',add_opportunity, name='add_opportunity'),
     path('about/',about, name='about'),
     path('login/',login_page, name='login'),
     path('logout/',logout_page, name='logout'),

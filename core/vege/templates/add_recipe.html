@@ -1,15 +1,16 @@
 {%extends "base.html"%} {% block start %}
 
 <div class="container mt-5">
-  <form
-    class="col-6 mx-auto card p-3 shadow-lg"
+    <form
+    id="add-recipe-form"
+    class="col-6 mx-auto card p-3 shadow-lg my-5"
     method="post"
     enctype="multipart/form-data">
     {% csrf_token %}
-    <h2>Update opportunity</h2>
+    <h2>Add Recipe</h2>
     <hr />
     <div class="mb-3">
-      <label for="exampleInputEmail1" class="form-label">Company</label>
+      <label for="exampleInputEmail1" class="form-label">Company <span style="color:red">*</span></label>
       <input
         name="name"
         type="text"
@@ -17,23 +18,21 @@
         class="form-control"
         id="exampleInputEmail1"
         aria-describedby="emailHelp"
-        value="{{opportunity.name}}"
       />
     </div>
     <div class="mb-3">
-      <label for="exampleInputEmail1" class="form-label">Location</label>
+      <label for="exampleInputEmail1" class="form-label">Location <span style="color:red">*</span></label>
       <input
         name="location"
         type="text"
-        
+        required
         class="form-control"
         id="exampleInputEmail1"
         aria-describedby="emailHelp"
-        value="{{opportunity.location}}"
       />
     </div>
     <div class="mb-3">
-      <label for="exampleInputEmail1" class="form-label">Role</label>
+      <label for="exampleInputEmail1" class="form-label">Role <span style="color:red">*</span></label>
       <input
         name="role"
         type="text"
@@ -41,7 +40,6 @@
         class="form-control"
         id="exampleInputEmail1"
         aria-describedby="emailHelp"
-        value="{{opportunity.role}}"
       />
     </div>
     <div class="mb-3">
@@ -53,39 +51,28 @@
         class="form-control"
         id="exampleInputEmail1"
         aria-describedby="emailHelp"
-        value="{{opportunity.batch}}"
       />
     </div>
     <div class="mb-3">
-      <label for="exampleInputEmail1" class="form-label">Link</label>
+      <label for="exampleInputEmail1" class="form-label">Link <span style="color:red">*</span></label>
       <input
-        name="op_link"
-        type="text"
+        name="link"
+        type="link"
         required
         class="form-control"
         id="exampleInputEmail1"
         aria-describedby="emailHelp"
-        value="{{opportunity.op_link}}"
       />
     </div>
-    
     <div class="mb-3">
-      <label for="status" class="form-label">Status</label>
-      <select name="status" class="form-select" aria-label="Default select example">
-        <option value="1" {% if opportunity.status == 1 %} selected {% endif %}>Active</option>
-        <option value="0" {% if opportunity.status == 0 %} selected {% endif %}>Inactive</option>
-      </select>
-    </div>
-    
-    {% comment %} <div class="mb-3">
       <label for="exampleInputPassword1" class="form-label">Description</label>
       <textarea
         name="description"
         
         class="form-control"
         id="exampleFormControlTextarea1"
-      >{{opportunity.description}}</textarea>
-    </div> {% endcomment %}
+      ></textarea>
+    </div>
     <div class="mb-3">
       <label for="exampleInputPassword1" class="form-label">Image</label>
       <input
@@ -95,12 +82,9 @@
         id="exampleInputPassword1"
       />
     </div>
-    <button type="submit" class="btn btn-success">Update Recipe</button>
-  </form>
-
+    <button type="submit" class="btn btn-success">Add Recipe</button>
+    </form   >
 
 </div>
-
-
 
 {% endblock %}
